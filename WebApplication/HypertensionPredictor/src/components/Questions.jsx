@@ -39,7 +39,7 @@ export default function Questions ({ index, onSaveAnswer, questionData, onChange
       setErrorMessage(<p className='error-message'>Please select an answer.</p>)
     } else {
       onSaveAnswer(index, selectedAnswer)
-      setTriggerSubmit(true) // Set the trigger for submission
+      setTriggerSubmit(true)
       setSelectedAnswer('')
       setErrorMessage('')
       onChangeIndex((prevIndex) => prevIndex + 1)
