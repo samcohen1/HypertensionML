@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import './Questions.css'
 import Navigation from './Navigation'
 
-export default function Questions ({ index, onSaveAnswer, questionData, onChangeIndex, answers }) {
+export default function Questions ({ index, onSaveAnswer, questionData, onChangeIndex, answers, onSubmit }) {
   const [selectedAnswer, setSelectedAnswer] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
 
@@ -23,6 +23,18 @@ export default function Questions ({ index, onSaveAnswer, questionData, onChange
     } else {
       onChangeIndex((prevIndex) => prevIndex + navigation)
       setErrorMessage('')
+    }
+  }
+
+  function handleSubmission () {
+    if (selectedAnswer === undefined || selectedAnswer === '') {
+      setErrorMessage(<p className='error-message'>Please select an answer.</p>)
+    } else {
+      onSaveAnswer(index, selectedAnswer)
+      onChangeIndex((prevIndex) => prevIndex + 1)
+      setSelectedAnswer('')
+      setErrorMessage('')
+      onSubmit()
     }
   }
 
@@ -74,7 +86,7 @@ export default function Questions ({ index, onSaveAnswer, questionData, onChange
           ))}
         </div>
       </div>
-      <Navigation index={index} onNavigation={handleNavigation} />
+      <Navigation index={index} onNavigation={handleNavigation} onSubmit={handleSubmission} />
     </>
   )
 }
