@@ -1,14 +1,29 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './Questions.css'
 import Navigation from './Navigation'
 
-export default function Questions ({ index, onSaveAnswer, questionData, onChangeIndex }) {
+export default function Questions ({ index, onSaveAnswer, questionData, onChangeIndex, answers }) {
   const [selectedAnswer, setSelectedAnswer] = useState('')
+  const [errorMessage, setErrorMessage] = useState('')
+
+  useEffect(() => {
+    setSelectedAnswer(answers[index - 1])
+  }, [index, answers])
 
   function handleNavigation (navigation) {
-    onSaveAnswer(index, selectedAnswer)
-    onChangeIndex((prevIndex) => prevIndex + navigation)
-    setSelectedAnswer('')
+    if (navigation === 1) {
+      if (selectedAnswer === undefined || selectedAnswer === '') {
+        setErrorMessage(<p className='error-message'>Please select an answer.</p>)
+      } else {
+        onSaveAnswer(index, selectedAnswer)
+        onChangeIndex((prevIndex) => prevIndex + navigation)
+        setSelectedAnswer('')
+        setErrorMessage('')
+      }
+    } else {
+      onChangeIndex((prevIndex) => prevIndex + navigation)
+      setErrorMessage('')
+    }
   }
 
   function handleInputChange (event) {
@@ -29,6 +44,7 @@ export default function Questions ({ index, onSaveAnswer, questionData, onChange
           <h2 className='question-heading'>{questionData.heading}</h2>
         </div>
         <p className='question-text'>{questionData.question}</p>
+        {errorMessage}
         <div className={`question-answers ${answersClass}`}>
           {questionData.answers.map((answer, i) => (
             answer.answerType === 'text'

@@ -22,14 +22,14 @@ export default function MainBody () {
 
   const body = (index === 0
     ? (
-      <p> The International Hypertension Federation (IHF) estimates that many people are at risk of developing hypertension,
+      <p className='home-text'> The International Hypertension Federation (IHF) estimates that many people are at risk of developing hypertension,
         often undiagnosed. Find out your risk with our quick, easy, and confidential assessment.
       </p>
       )
     : (
       <Questions
         index={index} onSaveAnswer={handleSaveAnswer} questionData={questions[index - 1]}
-        onChangeIndex={handleIndexChange}
+        onChangeIndex={handleIndexChange} answers={answers}
       />
       ))
 

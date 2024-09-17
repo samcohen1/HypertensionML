@@ -9,6 +9,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 10px;
+  margin-left: 30px;
 }
 
 .question-index {
@@ -25,13 +26,14 @@
   font-weight: bold;
   font-size: 1.2em;
   margin: 0;
+  margin-left: 30px;
 }
 
 .question-text {
-  font-size: 1em;
+  font-size: 18px;
   font-weight: 500;
-  margin: 10px 0;
-  color: #333;
+  margin-left: 30px;
+  color: #1d155d;
 }
 
 .question-answers {
@@ -40,13 +42,12 @@
   gap: 10px;
 }
 
-/* Use two columns if there are more than four options */
 .question-answers.two-columns {
   grid-template-columns: repeat(2, 1fr);
 }
 
 .option-label {
-  display: flex; /* Use flex to properly align radio buttons and text */
+  display: flex; 
   align-items: center;
   font-size: 1em;
   cursor: pointer;
@@ -54,6 +55,7 @@
 
 .option-input {
   margin-right: 10px;
+  margin-left: 30px;
 }
 
 .text-input {
@@ -63,6 +65,7 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   font-size: 1em;
+  margin-left: 30px;
 }
 
 .save-button {
@@ -78,4 +81,11 @@
 
 .save-button:hover {
   background-color: #e05d00;
+}
+
+.error-message {
+  color: red;
+  font-size: 18px;
+  margin-top: 5px;
+  margin-left: 30px;
 }

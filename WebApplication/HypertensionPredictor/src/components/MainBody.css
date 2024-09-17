@@ -5,12 +5,9 @@
   margin-top: 20px;
 }
 
-.text-content {
+.home-text {
   margin-left: 20px;
   max-width: 600px;
-}
-
-.text-content p {
   font-size: 18px;
   line-height: 1.5;
   color: #1d155d;
