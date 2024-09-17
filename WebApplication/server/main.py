@@ -29,13 +29,13 @@ def preprocess_data(input_data):
         'Age', 'Height', 'Weight', 'Waist', 'Male',
         'GenHealth', 'OvrDietHealth', 'EducationLvl', 'EverSmoked',
         'AgeStartSmoking', 'Smoker', 'CigsPerDay', 'AgeQuitSmoking', 'AlcConsump',
-        'ALcConsumpAmtPerDrinkDay', 'Diabetes', 'Cholesterol', 'Stroke', 'ModActivity', 
+        'AlcConsumpAmtPerDrinkDay', 'Diabetes', 'Cholesterol', 'Stroke', 'ModActivity'
     ]
     # Convert input data to DataFrame
     print("Hello\n")
     df = pd.DataFrame([input_data['answers']], columns=column_names)
-    # df = map_ratings(df, 'GenHealth')
-    # df = map_ratings(df, 'OvrDietHealth')
+    df = map_ratings(df, 'GenHealth')
+    df = map_ratings(df, 'OvrDietHealth')
     print('New DF\n')
     print(df.head())
     # You can add more preprocessing steps here if needed
