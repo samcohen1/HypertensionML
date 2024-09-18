@@ -144,11 +144,22 @@ def create_new_features(df):
     df['AlcConsump/Yr'] = df['AlcConsumpFreq'] * df['AlcConsumpAmtPerDrinkDay']
     # Must add lifetime cigs and yearsSmoked but need questions more confirmed
 
-def concat_min_max_df(min_max_df, df):
-    common_columns = df.columns.intersection(min_max_df.columns)
-    min_max_df_filtered = min_max_df[common_columns]
-    # Assumes within min max range
-    df = pd.concat(df, min_max_df_filtered, ignore_index=True)
+def concat_min_max_df(df):
+    # Specify the path to your CSV file
+    file_path = 'max_min_values.csv'
+
+    # Read the CSV file into a DataFrame
+    max_min_df = pd.read_csv(file_path)
+    common_columns = df.columns.intersection(max_min_df.columns)
+
+    # Filter DataFrames to only these common columns
+    df_filtered = df[common_columns]
+    max_min_df_filtered = max_min_df[common_columns]
+
+    # Concatenate the filtered DataFrames
+    to_scale_df = pd.concat([df_filtered, max_min_df_filtered], ignore_index=True)
+
+    return to_scale_df
 
 def scale(df):
         # Initialize the MinMaxScaler
@@ -170,7 +181,7 @@ def preprocess_data(input_data):
     # Convert input data to DataFrame
     df = pd.DataFrame([input_data['answers']], columns=column_names)
    # Assuming df is your DataFrame and it has been defined somewhere in your code
-    columns_to_convert = ['Age', 'Height', 'Weight', 'AlcConsumpAmtPerDrinkDay']
+    columns_to_convert = ['Age', 'Height', 'Weight', 'AgeStartSmoking', 'CigsPerDay', 'AgeQuitSmoking', 'AlcConsumpAmtPerDrinkDay']
 
 # Convert each specified column to numeric, handling non-numeric values gracefully
     for column in columns_to_convert:
@@ -179,11 +190,18 @@ def preprocess_data(input_data):
     # Put below in dedicated mapping function
     map(df)
     create_new_features(df)
-    print(df.head())
 
     # Call concat and scale functions
+    to_scale_df = concat_min_max_df(df)
+
+    print('To scale')
+    print(to_scale_df.head())
+
+    scaled_df = scale(to_scale_df)
+    print('Scaled')
+    print(scaled_df.head())
     # Remove final two rows of df_sclaed (min and max)
-    # df = df[:-2]
+    scaled_df = scaled_df[:-2]
 
 
     return df
