@@ -159,6 +159,9 @@ def concat_min_max_df(df):
     # Concatenate the filtered DataFrames
     to_scale_df = pd.concat([df_filtered, max_min_df_filtered], ignore_index=True)
 
+    print('Tp scale')
+    print(to_scale_df.head())
+
     return to_scale_df
 
 def scale(df):
@@ -185,24 +188,29 @@ def preprocess_data(input_data):
 
 # Convert each specified column to numeric, handling non-numeric values gracefully
     for column in columns_to_convert:
-        df[column] = pd.to_numeric(df[column], errors='coerce')
+        df[column] = pd.to_numeric(df[column], errors='coerce').astype(float)
 
     # Put below in dedicated mapping function
     map(df)
     create_new_features(df)
 
-    # Call concat and scale functions
+    print('DF')
+    print(df.head())
+
+    # Concatanate max and min values
     to_scale_df = concat_min_max_df(df)
-
-    print('To scale')
-    print(to_scale_df.head())
-
+    # Scale
     scaled_df = scale(to_scale_df)
-    print('Scaled')
-    print(scaled_df.head())
     # Remove final two rows of df_sclaed (min and max)
     scaled_df = scaled_df[:-2]
 
+    #Recombine
+    for column in scaled_df.columns:
+        if column in df.columns:
+            df.at[0, column] = scaled_df.at[0, column]
+
+    print('New DF')
+    print(df.head())
 
     return df
 
