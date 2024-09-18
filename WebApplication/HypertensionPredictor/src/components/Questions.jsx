@@ -18,6 +18,23 @@ export default function Questions ({ index, onSaveAnswer, questionData, onChange
     }
   }, [answers, triggerSubmit, onSubmit])
 
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+        if (index === 20) {
+          handleSubmission() // Last question, submit the form
+        } else {
+          handleNavigation(1) // Move to the next question
+        }
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [index, selectedAnswer])
+
   function handleNavigation (navigation) {
     if (navigation === 1) {
       if (!selectedAnswer) {
@@ -39,15 +56,18 @@ export default function Questions ({ index, onSaveAnswer, questionData, onChange
       setErrorMessage(<p className='error-message'>Please select an answer.</p>)
     } else {
       onSaveAnswer(index, selectedAnswer)
-      setTriggerSubmit(true) // Set the trigger for submission
+      setTriggerSubmit(true)
       setSelectedAnswer('')
       setErrorMessage('')
-      // onChangeIndex((prevIndex) => prevIndex + 1)
     }
   }
 
-  function handleInputChange (event) {
+  function handleSliderChange (event) {
     setSelectedAnswer(event.target.value)
+  }
+
+  function getSliderPosition (value, min, max) {
+    return ((value - min) / (max - min)) * 100
   }
 
   function handleOptionChange (caption) {
@@ -67,16 +87,30 @@ export default function Questions ({ index, onSaveAnswer, questionData, onChange
         {errorMessage}
         <div className={`question-answers ${answersClass}`}>
           {questionData.answers.map((answer, i) => (
-            answer.answerType === 'text'
+            answer.answerType === 'slider'
               ? (
-                <input
-                  key={i}
-                  type='text'
-                  placeholder={`Enter ${answer.caption.toLowerCase()}`}
-                  value={selectedAnswer}
-                  onChange={handleInputChange}
-                  className='text-input'
-                />
+                <div key={i} className='slider-container'>
+                  <div
+                    className='slider-value'
+                    style={{
+                      left: `calc(${getSliderPosition(selectedAnswer || answer.min, answer.min, answer.max)}% - 15px)`
+                    }}
+                  >
+                    {selectedAnswer || answer.min}
+                  </div>
+
+                  <input
+                    type='range'
+                    min={answer.min}
+                    max={answer.max}
+                    value={selectedAnswer || answer.min}
+                    onChange={handleSliderChange}
+                    className='slider-input'
+                    style={{
+                      background: `linear-gradient(90deg, #007bff ${getSliderPosition(selectedAnswer || answer.min, answer.min, answer.max)}%, #ddd ${getSliderPosition(selectedAnswer || answer.min, answer.min, answer.max)}%)`
+                    }}
+                  />
+                </div>
                 )
               : (
                 <label key={i} className='option-label'>
