@@ -68,7 +68,7 @@ def preprocess_data(input_data):
         'Age', 'Height', 'Weight', 'Waist', 'Male',
         'GenHealth', 'OvrDietHealth', 'EducationLvl', 'EverSmoked',
         'AgeStartSmoking', 'Smoker', 'CigsPerDay', 'AgeQuitSmoking', 'AlcConsump',
-        'AlcConsumpAmtPerDrinkDay', 'Diabetes', 'Cholesterol', 'Stroke', 'ModActivity'
+        'AlcConsumpAmtPerDrinkDay', 'Diabetes', 'Cholesterol', 'Stroke', 'ModActivity', 'VigActivity'
     ]
     # Convert input data to DataFrame
     df = pd.DataFrame([input_data['answers']], columns=column_names)
@@ -89,6 +89,7 @@ def submit_answers():
     try:
         data = request.get_json(force=True)
         df = preprocess_data(data)  # Convert received data to DataFrame
+        print(df.head())
         #print(df)  # For debugging purposes, prints DataFrame to console
         return jsonify({'status': 'success', 'data': data})
     except Exception as e:

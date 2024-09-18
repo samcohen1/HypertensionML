@@ -5,14 +5,22 @@ import Navigation from './Navigation'
 export default function Questions ({ index, onSaveAnswer, questionData, onChangeIndex, answers, onSubmit }) {
   const [selectedAnswer, setSelectedAnswer] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
+  const [triggerSubmit, setTriggerSubmit] = useState(false)
 
   useEffect(() => {
     setSelectedAnswer(answers[index - 1])
   }, [index, answers])
 
+  useEffect(() => {
+    if (triggerSubmit) {
+      onSubmit()
+      setTriggerSubmit(false)
+    }
+  }, [answers, triggerSubmit, onSubmit])
+
   function handleNavigation (navigation) {
     if (navigation === 1) {
-      if (selectedAnswer === undefined || selectedAnswer === '') {
+      if (!selectedAnswer) {
         setErrorMessage(<p className='error-message'>Please select an answer.</p>)
       } else {
         onSaveAnswer(index, selectedAnswer)
@@ -27,14 +35,14 @@ export default function Questions ({ index, onSaveAnswer, questionData, onChange
   }
 
   function handleSubmission () {
-    if (selectedAnswer === undefined || selectedAnswer === '') {
+    if (!selectedAnswer) {
       setErrorMessage(<p className='error-message'>Please select an answer.</p>)
     } else {
       onSaveAnswer(index, selectedAnswer)
-      onChangeIndex((prevIndex) => prevIndex + 1)
+      setTriggerSubmit(true) // Set the trigger for submission
       setSelectedAnswer('')
       setErrorMessage('')
-      onSubmit()
+      // onChangeIndex((prevIndex) => prevIndex + 1)
     }
   }
 
