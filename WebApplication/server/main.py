@@ -86,6 +86,7 @@ def preprocess_data(input_data):
 
 @app.route('/api/submit_answers', methods=['POST'])
 def submit_answers():
+    print('here')
     try:
         data = request.get_json(force=True)
         df = preprocess_data(data)  # Convert received data to DataFrame

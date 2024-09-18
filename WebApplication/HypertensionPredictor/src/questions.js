@@ -3,28 +3,28 @@ export const questions = [
     heading: 'Age',
     question: 'Please enter your age:',
     answers: [
-      { caption: 'Age', answerType: 'text' }
+      { caption: 'Age', answerType: 'slider', min: 18, max: 100 }
     ]
   },
   {
     heading: 'Height',
-    question: 'Please enter your height:',
+    question: 'Please enter your height in cm:',
     answers: [
-      { caption: 'Height', answerType: 'text' }
+      { caption: 'Height', answerType: 'slider', min: 100, max: 250 } // Slider for height between 100 and 250 cm
     ]
   },
   {
     heading: 'Mass',
-    question: 'Please enter your mass:',
+    question: 'Please enter your mass in kg:',
     answers: [
-      { caption: 'Mass', answerType: 'text' }
+      { caption: 'Mass', answerType: 'slider', min: 30, max: 200 }
     ]
   },
   {
     heading: 'Waist Circumference',
-    question: 'Please enter your waist circumference:',
+    question: 'Please enter your waist circumference in cm:',
     answers: [
-      { caption: 'Waist Circumference', answerType: 'text' }
+      { caption: 'Waist Circumference', answerType: 'slider', min: 50, max: 200 } // Slider for waist circumference
     ]
   },
   {
@@ -81,7 +81,7 @@ export const questions = [
     heading: 'Start Smoking',
     question: 'At what age did you start smoking?',
     answers: [
-      { caption: 'Start Smoking Age', answerType: 'text' }
+      { caption: 'Start Smoking Age', answerType: 'slider', min: 10, max: 100 } // Slider for start smoking age
     ]
   },
   {
@@ -96,14 +96,14 @@ export const questions = [
     heading: 'Cigarettes Per Day',
     question: 'How many cigarettes do you smoke per day?',
     answers: [
-      { caption: 'Cigarettes Per Day', answerType: 'text' }
+      { caption: 'Cigarettes Per Day', answerType: 'slider', min: 0, max: 100 }
     ]
   },
   {
     heading: 'Quit Smoking',
     question: 'At what age did you quit smoking?',
     answers: [
-      { caption: 'Quit Smoking Age', answerType: 'text' }
+      { caption: 'Quit Smoking Age', answerType: 'slider', min: 10, max: 100 } // Slider for quit smoking age
     ]
   },
   {
@@ -126,7 +126,7 @@ export const questions = [
     heading: 'Drinking',
     question: 'How much do you drink when you consume alcohol?',
     answers: [
-      { caption: 'Drinking Amount', answerType: 'text' }
+      { caption: 'Drinking Amount', answerType: 'slider', min: 0, max: 15 }
     ]
   },
   {
