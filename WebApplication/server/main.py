@@ -229,12 +229,12 @@ def submit_answers():
         df = preprocess_data(data)  # Convert received data to DataFrame
         model = load_model()
         pred_prob = model.predict_proba(df)[:, 1]
-        print('Prediction:\n')
-        print(pred_prob)
-        #print(df)  # For debugging purposes, prints DataFrame to console
-        return jsonify({'status': 'success', 'data': data})
+        print('Prediction:\n', pred_prob)
+        # Return prediction probability along with success status
+        return jsonify({'status': 'success', 'data': data, 'prediction': pred_prob.tolist()})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 400
+
 
 if __name__ == '__main__':
     app.run(debug=False, port=5000)
