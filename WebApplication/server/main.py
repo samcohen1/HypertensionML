@@ -6,8 +6,18 @@ from sklearn.preprocessing import MinMaxScaler
 app = Flask(__name__)
 cors = CORS(app, origins='*')
 
+
+def adjust_health(row, health_feature):
+    if row['Age'] < 35:
+        return row[health_feature] - 0.5
+    elif 60 <= row['Age'] <= 80:
+        return row[health_feature] + 0.5
+    elif row['Age'] >= 80:
+        return row[health_feature] + 1
+    else:
+        return row[health_feature]
+
 def map_health_ratings(df, column_name):
-    # Define the mapping dictionary
     mapping = {
         'Excellent': 1,
         'Very Good': 2,
@@ -16,27 +26,28 @@ def map_health_ratings(df, column_name):
         'Poor': 5
     }
     
-    # Apply the mapping to the specified column
     if column_name in df.columns:
-        df[column_name] = df[column_name].map(mapping)
+        df[column_name] = df[column_name].map(mapping).astype(float)  # Ensure it's float for subsequent operations
+        df[column_name] = df.apply(lambda row: adjust_health(row, column_name), axis=1)
     else:
         print(f"Column {column_name} not found in DataFrame")
-    
-    return df
+
+     
+
 
 def map_alc_consump_freq(df, column_name):
     # Define the mapping dictionary
     mapping = {
-        1: 365,
-        2: 300,
-        3: 182,
-        4: 104,
-        5: 52,
-        6: 30,
-        7: 12,
-        8: 9,
-        9: 5,
-        10: 2
+        'Every Day': 365,
+        'Most Days': 300,
+        '3-4 times per week': 182,
+        '2 times per week': 104,
+        'Once a week': 52,
+        '2-3 times a month': 30,
+        'Once a month': 12,
+        '5-10 times': 9,
+        'Less than 5 times': 5,
+        'Never': 0
     }
     
     # Apply the mapping to the specified column
@@ -44,14 +55,114 @@ def map_alc_consump_freq(df, column_name):
         df[column_name] = df[column_name].map(mapping)
     else:
         print(f"Column {column_name} not found in DataFrame")
-    
-    return df
 
-def concat_min_max_df(min_max_df, df):
-    common_columns = df.columns.intersection(min_max_df.columns)
-    min_max_df_filtered = min_max_df[common_columns]
-    # Assumes within min max range
-    df = pd.concat(df, min_max_df_filtered, ignore_index=True)
+def map_education_lvl(df, column_name):
+    mapping = {
+        'Less than 9th grade': 1,
+        'Grades 9-11': 2,
+        'High School Graduate': 3,
+        'Undergraduate Degree or Diploma': 4,
+        'Post Graduate Degree': 5,
+        '2-3 times a month': 30
+    }
+
+    if column_name in df.columns:
+        df[column_name] = df[column_name].map(mapping)
+    else:
+        print(f"Column {column_name} not found in DataFrame")
+
+def map_gender(df, column_name):
+    # Define the mapping dictionary
+    mapping = {
+        'Male': 1,
+        'Female': 0
+    }
+    
+    # Apply the mapping to the specified column
+    if column_name in df.columns:
+        df[column_name] = df[column_name].map(mapping)
+    else:
+        print(f"Column {column_name} not found in DataFrame")        
+
+def map_diabetes(df, column_name):
+    # Define the mapping dictionary
+    mapping = {
+        'Yes': 1,
+        'Borderline': 0.5,
+        'No': 0
+    }
+    
+    # Apply the mapping to the specified column
+    if column_name in df.columns:
+        df[column_name] = df[column_name].map(mapping)
+    else:
+        print(f"Column {column_name} not found in DataFrame")  
+
+def map_smoker(df, column_name):
+    # Define the mapping dictionary
+    mapping = {
+        'Every day': 1,
+        'Sometimes': 0.5,
+        'No': 0
+    }
+    
+    # Apply the mapping to the specified column
+    if column_name in df.columns:
+        df[column_name] = df[column_name].map(mapping)
+    else:
+        print(f"Column {column_name} not found in DataFrame")  
+
+def map_yes_and_no(df, column_names):
+    # Define the mapping dictionary
+    mapping = {
+        'Yes': 1,
+        'No': 0
+    }
+    
+    # Iterate through the list of column names and apply the mapping
+    for column_name in column_names:
+        if column_name in df.columns:
+            df[column_name] = df[column_name].map(mapping)
+        else:
+            print(f"Column {column_name} not found in DataFrame")
+
+def map(df):
+    map_health_ratings(df, 'GenHealth')
+    map_health_ratings(df, 'OvrDietHealth')
+    map_alc_consump_freq(df, 'AlcConsumpFreq')
+    map_education_lvl(df, 'EducationLvl')
+    map_gender(df, 'Male')
+    map_diabetes(df, 'Diabetes')
+    map_smoker(df, 'Smoker')
+    yes_no_columns = ['Cholesterol', 'Stroke', 'ModActivity', 'VigActivity']
+    map_yes_and_no(df, yes_no_columns)
+
+
+def create_new_features(df):
+    df['BMI'] = df['Weight'] / ((df['Height'] / 100)**2)
+    df['WeightedActivity'] = df['VigActivity'] * 2 + df['ModActivity']
+    df['AlcConsump/Yr'] = df['AlcConsumpFreq'] * df['AlcConsumpAmtPerDrinkDay']
+    # Must add lifetime cigs and yearsSmoked but need questions more confirmed
+
+def concat_min_max_df(df):
+    # Specify the path to your CSV file
+    file_path = 'max_min_values.csv'
+
+    # Read the CSV file into a DataFrame
+    max_min_df = pd.read_csv(file_path)
+    common_columns = df.columns.intersection(max_min_df.columns)
+
+    # Filter DataFrames to only these common columns
+    df_filtered = df[common_columns]
+    max_min_df_filtered = max_min_df[common_columns]
+
+    # Concatenate the filtered DataFrames
+    to_scale_df = pd.concat([df_filtered, max_min_df_filtered], ignore_index=True)
+
+    print('Tp scale')
+    print(to_scale_df.head())
+
+    return to_scale_df
 
 def scale(df):
         # Initialize the MinMaxScaler
@@ -67,20 +178,39 @@ def preprocess_data(input_data):
     column_names = [
         'Age', 'Height', 'Weight', 'Waist', 'Male',
         'GenHealth', 'OvrDietHealth', 'EducationLvl', 'EverSmoked',
-        'AgeStartSmoking', 'Smoker', 'CigsPerDay', 'AgeQuitSmoking', 'AlcConsump',
+        'AgeStartSmoking', 'Smoker', 'CigsPerDay', 'AgeQuitSmoking', 'AlcConsumpFreq',
         'AlcConsumpAmtPerDrinkDay', 'Diabetes', 'Cholesterol', 'Stroke', 'ModActivity', 'VigActivity'
     ]
     # Convert input data to DataFrame
     df = pd.DataFrame([input_data['answers']], columns=column_names)
+   # Assuming df is your DataFrame and it has been defined somewhere in your code
+    columns_to_convert = ['Age', 'Height', 'Weight', 'AgeStartSmoking', 'CigsPerDay', 'AgeQuitSmoking', 'AlcConsumpAmtPerDrinkDay']
+
+# Convert each specified column to numeric, handling non-numeric values gracefully
+    for column in columns_to_convert:
+        df[column] = pd.to_numeric(df[column], errors='coerce').astype(float)
 
     # Put below in dedicated mapping function
-    df = map_health_ratings(df, 'GenHealth')
-    df = map_health_ratings(df, 'OvrDietHealth')
+    map(df)
+    create_new_features(df)
 
-    # Call concat and scale functions
+    print('DF')
+    print(df.head())
+
+    # Concatanate max and min values
+    to_scale_df = concat_min_max_df(df)
+    # Scale
+    scaled_df = scale(to_scale_df)
     # Remove final two rows of df_sclaed (min and max)
-    # df = df[:-2]
+    scaled_df = scaled_df[:-2]
 
+    #Recombine
+    for column in scaled_df.columns:
+        if column in df.columns:
+            df.at[0, column] = scaled_df.at[0, column]
+
+    print('New DF')
+    print(df.head())
 
     return df
 
