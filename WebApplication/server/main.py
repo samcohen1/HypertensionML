@@ -3,9 +3,16 @@ from flask_cors import CORS
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from catboost import CatBoostClassifier
+import matplotlib.pyplot as plt
+import shap
+import pickle
+import os
 
 app = Flask(__name__)
 cors = CORS(app, origins='*')
+
+with open('shap_explainer.pkl', 'rb') as f:
+    explainer = pickle.load(f)
 
 
 def adjust_health(row, health_feature):
@@ -222,6 +229,7 @@ def load_model():
     model.load_model('model.cbm', format='cbm')
     return model
 
+
 @app.route('/api/submit_answers', methods=['POST'])
 def submit_answers():
     try:
@@ -230,9 +238,26 @@ def submit_answers():
         model = load_model()
         pred_prob = model.predict_proba(df)[:, 1]
         print('Prediction:\n', pred_prob)
-        # Return prediction probability along with success status
+        shap_values = explainer(df)
+
+        # Save the SHAP waterfall plot
+        instance = df.iloc[[0]]
+        shap_values = explainer(instance)
+        
+        # Create the waterfall plot
+        shap.plots.waterfall(shap_values[0], max_display=20)  # Set max_display to None or a large number
+        
+        # Save the figure to a file
+        save_path = os.path.join(os.getcwd(), 'shap_waterfall_plot.png')  # Specify the file path
+        plt.savefig(save_path, bbox_inches='tight')  # Save the figure with tight bounding box
+        
+        # Confirm saving and close the plot
+        print(f"Waterfall plot saved at: {save_path}")
+        plt.close()
+
         return jsonify({'status': 'success', 'data': data, 'prediction': pred_prob.tolist()})
     except Exception as e:
+        print(f"Error during request handling: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 400
 
 
