@@ -1,0 +1,67 @@
+.results-container {
+  background-color: #2c3e50; /* Dark blue background */
+  color: white;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.results-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 24px;
+}
+
+.results-score {
+  font-weight: bold;
+  font-size: 48px;
+  color: #e74c3c; /* Reddish color for the score */
+}
+
+.results-risk-level {
+  background-color: #e74c3c; /* Matching button background */
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.results-title {
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.results-description {
+  font-size: 16px;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
+.results-actions, .results-social {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.btn {
+  background-color: #e74c3c; /* Button background */
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+  background-color: #c0392b; /* Darken on hover */
+}
+
+.social-btn {
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.results-social .social-btn:not(:last-child) {
+  margin-right: 10px;
+}
