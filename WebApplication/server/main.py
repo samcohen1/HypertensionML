@@ -243,17 +243,7 @@ def submit_answers():
         # Save the SHAP waterfall plot
         instance = df.iloc[[0]]
         shap_values = explainer(instance)
-        
-        # Create the waterfall plot
         shap.plots.waterfall(shap_values[0], max_display=20)  # Set max_display to None or a large number
-        
-        # Save the figure to a file
-        save_path = os.path.join(os.getcwd(), 'shap_waterfall_plot.png')  # Specify the file path
-        plt.savefig(save_path, bbox_inches='tight')  # Save the figure with tight bounding box
-        
-        # Confirm saving and close the plot
-        print(f"Waterfall plot saved at: {save_path}")
-        plt.close()
 
         return jsonify({'status': 'success', 'data': data, 'prediction': pred_prob.tolist()})
     except Exception as e:
