@@ -28,7 +28,7 @@ export default function Questions ({ index, onSaveAnswer, questionData, onChange
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Enter') {
-        if (index === 20) {
+        if (index === 19) {
           handleSubmission() // Last question, submit the form
         } else {
           handleNavigation(1) // Move to the next question

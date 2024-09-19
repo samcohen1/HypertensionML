@@ -102,9 +102,9 @@ def map_diabetes(df, column_name):
 def map_smoker(df, column_name):
     # Define the mapping dictionary
     mapping = {
-        'Every day': 1,
+        'Every Day': 1,
         'Sometimes': 0.5,
-        'No': 0
+        'Never': 0
     }
     
     # Apply the mapping to the specified column
@@ -175,8 +175,8 @@ def preprocess_data(input_data):
     #Define column names
     column_names = [
         'Age', 'Height', 'Weight', 'Waist', 'Gender',
-        'GenHealth', 'OvrDietHealth', 'EducationLvl', 'EverSmoked',
-        'AgeStartSmoking', 'Smoker', 'CigsPerDay', 'AgeQuitSmoking', 'AlcConsumpFreq',
+        'GenHealth', 'OvrDietHealth', 'EducationLvl','Smoker',
+        'AgeStartSmoking', 'CigsPerDay', 'AgeQuitSmoking', 'AlcConsumpFreq',
         'AlcConsumpAmtPerDrinkDay', 'Diabetes', 'Cholesterol', 'Stroke', 'ModActivity', 'VigActivity'
     ]
     # Convert input data to DataFrame

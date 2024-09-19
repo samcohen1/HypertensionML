@@ -70,11 +70,12 @@ export const questions = [
     ]
   },
   {
-    heading: 'Past Smoking',
-    question: 'Have you ever smoked in the past?',
+    heading: 'Smoking',
+    question: 'How often do you smoke?',
     answers: [
-      { caption: 'Yes', answerType: 'option' },
-      { caption: 'No', answerType: 'option' }
+      { caption: 'Every Day', answerType: 'option' },
+      { caption: 'Sometimes', answerType: 'option' },
+      { caption: 'Never', answerType: 'option' }
     ]
   },
   {
@@ -82,14 +83,6 @@ export const questions = [
     question: 'At what age did you start smoking?',
     answers: [
       { caption: 'Start Smoking Age', answerType: 'slider', min: 10, max: 100 } // Slider for start smoking age
-    ]
-  },
-  {
-    heading: 'Current Smoking',
-    question: 'Do you currently smoke?',
-    answers: [
-      { caption: 'Yes', answerType: 'option' },
-      { caption: 'No', answerType: 'option' }
     ]
   },
   {
