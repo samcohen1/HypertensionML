@@ -5,30 +5,15 @@ import Navigation from './Navigation'
 export default function Questions ({ index, onSaveAnswer, questionData, onChangeIndex, answers, onSubmit }) {
   const [selectedAnswer, setSelectedAnswer] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
-  const [triggerSubmit, setTriggerSubmit] = useState(false)
 
   useEffect(() => {
     setSelectedAnswer(answers[index - 1])
   }, [index, answers])
 
   useEffect(() => {
-    if (triggerSubmit) {
-      onSubmit()
-      setTriggerSubmit(false)
-    }
-  }, [answers, triggerSubmit, onSubmit])
-
-  useEffect(() => {
-    if (triggerSubmit) {
-      onSubmit()
-      setTriggerSubmit(false)
-    }
-  }, [answers, triggerSubmit, onSubmit])
-
-  useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Enter') {
-        if (index === 19) {
+        if (index === 20) {
           handleSubmission() // Last question, submit the form
         } else {
           handleNavigation(1) // Move to the next question
@@ -63,7 +48,7 @@ export default function Questions ({ index, onSaveAnswer, questionData, onChange
       setErrorMessage(<p className='error-message'>Please select an answer.</p>)
     } else {
       onSaveAnswer(index, selectedAnswer)
-      setTriggerSubmit(true)
+      onSubmit()
       setSelectedAnswer('')
       setErrorMessage('')
     }

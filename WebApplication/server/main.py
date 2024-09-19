@@ -11,8 +11,8 @@ import os
 app = Flask(__name__)
 cors = CORS(app, origins='*')
 
-with open('shap_explainer.pkl', 'rb') as f:
-    explainer = pickle.load(f)
+# with open('shap_explainer.pkl', 'rb') as f:
+#     explainer = pickle.load(f)
 
 
 def adjust_health(row, health_feature):
@@ -238,12 +238,12 @@ def submit_answers():
         model = load_model()
         pred_prob = model.predict_proba(df)[:, 1]
         print('Prediction:\n', pred_prob)
-        shap_values = explainer(df)
+        # shap_values = explainer(df)
 
-        # Save the SHAP waterfall plot
-        instance = df.iloc[[0]]
-        shap_values = explainer(instance)
-        shap.plots.waterfall(shap_values[0], max_display=20)  # Set max_display to None or a large number
+        # # Save the SHAP waterfall plot
+        # instance = df.iloc[[0]]
+        # shap_values = explainer(instance)
+        # shap.plots.waterfall(shap_values[0], max_display=20)  # Set max_display to None or a large number
 
         return jsonify({'status': 'success', 'data': data, 'prediction': pred_prob.tolist()})
     except Exception as e:

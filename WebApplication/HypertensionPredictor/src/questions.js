@@ -161,6 +161,13 @@ export const questions = [
       { caption: 'Yes', answerType: 'option' },
       { caption: 'No', answerType: 'option' }
     ]
+  },
+  {
+    heading: 'Quit Smoking',
+    question: 'At what age did you quit smoking?',
+    answers: [
+      { caption: 'Quit Smoking Age', answerType: 'slider', min: 10, max: 100 } // Slider for quit smoking age
+    ]
   }
 ]
 

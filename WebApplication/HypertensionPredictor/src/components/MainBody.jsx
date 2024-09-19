@@ -23,7 +23,6 @@ export default function MainBody () {
   }
 
   function handleSubmission () {
-    console.log('')
     fetch('http://localhost:5000/api/submit_answers', {
       method: 'POST',
       headers: {
