@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 from flask_cors import CORS
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
+from catboost import CatBoostClassifier
 
 app = Flask(__name__)
 cors = CORS(app, origins='*')
@@ -131,7 +132,7 @@ def map(df):
     map_health_ratings(df, 'OvrDietHealth')
     map_alc_consump_freq(df, 'AlcConsumpFreq')
     map_education_lvl(df, 'EducationLvl')
-    map_gender(df, 'Male')
+    map_gender(df, 'Gender')
     map_diabetes(df, 'Diabetes')
     map_smoker(df, 'Smoker')
     yes_no_columns = ['Cholesterol', 'Stroke', 'ModActivity', 'VigActivity']
@@ -159,9 +160,6 @@ def concat_min_max_df(df):
     # Concatenate the filtered DataFrames
     to_scale_df = pd.concat([df_filtered, max_min_df_filtered], ignore_index=True)
 
-    print('Tp scale')
-    print(to_scale_df.head())
-
     return to_scale_df
 
 def scale(df):
@@ -176,7 +174,7 @@ def scale(df):
 def preprocess_data(input_data):
     #Define column names
     column_names = [
-        'Age', 'Height', 'Weight', 'Waist', 'Male',
+        'Age', 'Height', 'Weight', 'Waist', 'Gender',
         'GenHealth', 'OvrDietHealth', 'EducationLvl', 'EverSmoked',
         'AgeStartSmoking', 'Smoker', 'CigsPerDay', 'AgeQuitSmoking', 'AlcConsumpFreq',
         'AlcConsumpAmtPerDrinkDay', 'Diabetes', 'Cholesterol', 'Stroke', 'ModActivity', 'VigActivity'
@@ -193,10 +191,6 @@ def preprocess_data(input_data):
     # Put below in dedicated mapping function
     map(df)
     create_new_features(df)
-
-    print('DF')
-    print(df.head())
-
     # Concatanate max and min values
     to_scale_df = concat_min_max_df(df)
     # Scale
@@ -209,22 +203,38 @@ def preprocess_data(input_data):
         if column in df.columns:
             df.at[0, column] = scaled_df.at[0, column]
 
-    print('New DF')
-    print(df.head())
+    # Adding new features and initializing them with 0
+    df['yearsSmoked'] = 0
+    df['lifetimeCigarettes'] = 0
+
+    df = df[['Gender', 'Age', 'EducationLvl', 'BMI', 'Height', 'Waist', 'Weight',
+       'Cholesterol', 'Diabetes', 'AlcConsumpAmtPerDrinkDay', 'OvrDietHealth',
+       'GenHealth', 'Stroke', 'yearsSmoked', 'lifetimeCigarettes',
+       'AlcConsump/Yr', 'WeightedActivity']]
 
     return df
 
+def load_model():
+    # Create an instance of the model
+    model = CatBoostClassifier()
+
+    # Load the model from the file
+    model.load_model('model.cbm', format='cbm')
+    return model
+
 @app.route('/api/submit_answers', methods=['POST'])
 def submit_answers():
-    print('here')
     try:
         data = request.get_json(force=True)
         df = preprocess_data(data)  # Convert received data to DataFrame
-        print(df.head())
+        model = load_model()
+        pred_prob = model.predict_proba(df)[:, 1]
+        print('Prediction:\n')
+        print(pred_prob)
         #print(df)  # For debugging purposes, prints DataFrame to console
         return jsonify({'status': 'success', 'data': data})
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 400
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=False, port=5000)
