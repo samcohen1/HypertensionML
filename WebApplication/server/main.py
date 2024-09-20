@@ -11,8 +11,8 @@ import os
 app = Flask(__name__)
 cors = CORS(app, origins='*')
 
-# with open('shap_explainer.pkl', 'rb') as f:
-#     explainer = pickle.load(f)
+with open('shap_explainer.pkl', 'rb') as f:
+    explainer = pickle.load(f)
 
 
 def adjust_health(row, health_feature):
@@ -95,9 +95,9 @@ def map_gender(df, column_name):
 def map_diabetes(df, column_name):
     # Define the mapping dictionary
     mapping = {
-        'Yes': 1,
+        'Yes': 0,
         'Borderline': 0.5,
-        'No': 0
+        'No': 1
     }
     
     # Apply the mapping to the specified column
@@ -109,9 +109,9 @@ def map_diabetes(df, column_name):
 def map_smoker(df, column_name):
     # Define the mapping dictionary
     mapping = {
-        'Every Day': 1,
+        'Every Day': 0,
         'Sometimes': 0.5,
-        'Never': 0
+        'Never': 1
     }
     
     # Apply the mapping to the specified column
@@ -123,8 +123,8 @@ def map_smoker(df, column_name):
 def map_yes_and_no(df, column_names):
     # Define the mapping dictionary
     mapping = {
-        'Yes': 1,
-        'No': 0
+        'Yes': 0,
+        'No': 1
     }
     
     # Iterate through the list of column names and apply the mapping
@@ -148,7 +148,7 @@ def map(df):
 
 def create_new_features(df):
     df['BMI'] = df['Weight'] / ((df['Height'] / 100)**2)
-    df['WeightedActivity'] = df['VigActivity'] * 2 + df['ModActivity']
+    df['WeightedActivity'] = (1 - df['VigActivity']) * 2 + (1 - df['ModActivity'])
     df['AlcConsump/Yr'] = df['AlcConsumpFreq'] * df['AlcConsumpAmtPerDrinkDay']
     # Must add lifetime cigs and yearsSmoked but need questions more confirmed
 
@@ -233,22 +233,33 @@ def load_model():
 @app.route('/api/submit_answers', methods=['POST'])
 def submit_answers():
     try:
+        # Receive data from frontend
         data = request.get_json(force=True)
-        df = preprocess_data(data)  # Convert received data to DataFrame
+        # Preprocess data into a DataFrame
+        df = preprocess_data(data)  
+        # Load the trained model
         model = load_model()
+        # Predict probabilities
         pred_prob = model.predict_proba(df)[:, 1]
         print('Prediction:\n', pred_prob)
-        # shap_values = explainer(df)
 
-        # # Save the SHAP waterfall plot
-        # instance = df.iloc[[0]]
-        # shap_values = explainer(instance)
-        # shap.plots.waterfall(shap_values[0], max_display=20)  # Set max_display to None or a large number
+        # Extract SHAP values for the instance
+        instance = df.iloc[[0]]  # Select the first instance from the DataFrame
+        shap_values = explainer(instance)  # Compute SHAP values for the instance
 
-        return jsonify({'status': 'success', 'data': data, 'prediction': pred_prob.tolist()})
+        # Convert SHAP values to a dictionary format for JSON
+        shap_dict = {
+            feature: shap_value
+            for feature, shap_value in zip(instance.columns, shap_values.values[0])
+        }
+
+
+        # Return success response including prediction and SHAP values
+        return jsonify({'status': 'success', 'data': data, 'prediction': pred_prob.tolist(), 'shap_values': shap_dict})
     except Exception as e:
         print(f"Error during request handling: {str(e)}")
         return jsonify({'status': 'error', 'message': str(e)}), 400
+
 
 
 if __name__ == '__main__':

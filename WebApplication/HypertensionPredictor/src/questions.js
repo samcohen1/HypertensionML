@@ -127,6 +127,7 @@ export const questions = [
     question: 'Have you ever been diagnosed with diabetes?',
     answers: [
       { caption: 'Yes', answerType: 'option' },
+      { caption: 'Borderline', answerType: 'option' },
       { caption: 'No', answerType: 'option' }
     ]
   },
