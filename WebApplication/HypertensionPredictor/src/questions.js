@@ -71,10 +71,11 @@ export const questions = [
   },
   {
     heading: 'Smoking',
-    question: 'How often do you smoke?',
+    question: 'Do you smoke cigarettes?',
     answers: [
       { caption: 'Every Day', answerType: 'option' },
       { caption: 'Sometimes', answerType: 'option' },
+      { caption: 'No Longer', answerType: 'option' },
       { caption: 'Never', answerType: 'option' }
     ]
   },
