@@ -1,0 +1,60 @@
+.risk-factors-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  background-color: #2c2c54;
+  padding: 20px;
+  color: white;
+  border-radius: 8px;
+  font-family: Arial, sans-serif;
+  gap: 20px;
+}
+
+.risk-block {
+  background-color: #3f3d56;
+  border-radius: 8px;
+  padding: 20px;
+  width: 45%; /* Two columns */
+}
+
+.risk-block h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+  color: #ffffff;
+}
+
+.risk-block ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.risk-block li {
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: #dddddd;
+}
+
+/* Styling for factors that increase risk */
+.increase-risk {
+  border: 2px solid #ff5252;
+}
+
+.increase-risk h2 {
+  color: #ff5252;
+}
+
+/* Styling for factors that decrease risk */
+.decrease-risk {
+  border: 2px solid #4caf50;
+}
+
+.decrease-risk h2 {
+  color: #4caf50;
+}
+
+/* Responsive behavior */
+@media (max-width: 768px) {
+  .risk-block {
+    width: 100%; /* Stacked in one column for smaller screens */
+  }
+}
