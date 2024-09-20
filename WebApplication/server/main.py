@@ -182,7 +182,7 @@ def preprocess_data(input_data):
     #Define column names
     column_names = [
         'Age', 'Height', 'Weight', 'Waist', 'Gender',
-        'GenHealth', 'OvrDietHealth', 'EducationLvl','Smoker',
+        'GenHealth', 'OvrDietHealth', 'EducationLvl', 'Smoker',
         'AgeStartSmoking', 'CigsPerDay', 'AgeQuitSmoking', 'AlcConsumpFreq',
         'AlcConsumpAmtPerDrinkDay', 'Diabetes', 'Cholesterol', 'Stroke', 'ModActivity', 'VigActivity'
     ]
