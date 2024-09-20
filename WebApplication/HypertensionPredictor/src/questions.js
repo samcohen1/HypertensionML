@@ -170,6 +170,14 @@ export const questions = [
       { caption: 'Yes', answerType: 'option' },
       { caption: 'No', answerType: 'option' }
     ]
+  },
+  {
+    heading: 'Extra Q',
+    question: 'Do you engage in vigorous physical activity?',
+    answers: [
+      { caption: 'Yes', answerType: 'option' },
+      { caption: 'No', answerType: 'option' }
+    ]
   }
 ]
 

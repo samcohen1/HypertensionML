@@ -3,24 +3,34 @@ import { useState, useEffect } from 'react';
 import './Questions.css';
 import Navigation from './Navigation';
 
-// Helper function to determine if a question should be skipped
+// Helper function to determine how many questions should be skipped
 function shouldSkipQuestion(currentIndex, answers) {
-  // Adjust index numbers according to your question order
-  const smokingFrequencyAnswer = answers[9]; // Index 8 corresponds to the "Smoking" question
+  const everSmokedAnswer = answers[8];
+  const smokingFrequencyAnswer = answers[9];
+  const alcFreqAnswer = answers[13];
 
-  console.log(`Checking skip logic for index: ${currentIndex}, Smoking Answer: ${smokingFrequencyAnswer}`);
+  console.log(`Checking skip logic for index: ${currentIndex}, Answer: ${everSmokedAnswer}`);
 
-  // Check if the current index corresponds to the "Quit Smoking Age" question (index 11)
-  if (
-    currentIndex === 13 && // Ensure this index matches the "Quit Smoking Age" question
-    (smokingFrequencyAnswer === 'Every Day' || smokingFrequencyAnswer === 'Sometimes')
-  ) {
-    const ageAnswer = answers[0]; // Index 0 corresponds to the "Age" question
-    console.log(`Skipping "Quit Smoking Age" question, auto-filling with age: ${ageAnswer}`);
-    return { skip: true, autoFillValue: ageAnswer };
+  // Determine if the "Smoking Frequency" question needs to be auto-filled based on previous answers
+  if (currentIndex === 10 && everSmokedAnswer === 'No') {
+    console.log('Skipping "Smoking Frequency" question, auto-filling with "Never".');
+    return { skipCount: 4, autoFillValues: ['Never', 0, 0, 0] };
   }
 
-  return { skip: false };
+  // Check if the "Quit Smoking Age" question should be skipped
+  if (currentIndex === 13 && (smokingFrequencyAnswer === 'Every Day' || smokingFrequencyAnswer === 'Sometimes')) {
+    const ageAnswer = answers[0]; // Use the person's age as the auto-fill value
+    console.log(`Skipping "Quit Smoking Age" question, auto-filling with age: ${ageAnswer}`);
+    return { skipCount: 1, autoFillValues: [ageAnswer] };
+  }
+
+  if (currentIndex === 15 && (alcFreqAnswer === 'Never')) {
+    const alcAnswer = answers[0]; // Use the person's age as the auto-fill value
+    console.log(`Skipping "Quit Smoking Age" question, auto-filling with 0: ${alcAnswer}`);
+    return { skipCount: 1, autoFillValues: [alcAnswer] };
+  }
+
+  return { skipCount: 0, autoFillValues: [] };
 }
 
 export default function Questions({
@@ -41,10 +51,10 @@ export default function Questions({
   useEffect(() => {
     const handleKeyDown = (event) => {
       if (event.key === 'Enter') {
-        if (index === 20) {
-          handleSubmission(); // Last question, submit the form
+        if (index === 21) {
+          handleSubmission();
         } else {
-          handleNavigation(1); // Move to the next question
+          handleNavigation(1);
         }
       }
     };
@@ -62,15 +72,18 @@ export default function Questions({
       } else {
         onSaveAnswer(index, selectedAnswer);
 
-        // Check if the next question should be skipped
-        const { skip, autoFillValue } = shouldSkipQuestion(index + 1, [
-          ...answers,
-          selectedAnswer,
-        ]);
+        // Check if the next question(s) should be skipped
+        const { skipCount, autoFillValues } = shouldSkipQuestion(index + 1, [...answers, selectedAnswer]);
 
-        if (skip) {
-          onSaveAnswer(index + 1, autoFillValue);
-          onChangeIndex((prevIndex) => prevIndex + 2); // Skip the next question
+        if (skipCount > 0) {
+          // Auto-fill answers for the questions to be skipped
+          autoFillValues.forEach((value, i) => onSaveAnswer(index + 1 + i, value));
+
+          // Skip the determined number of questions
+          onChangeIndex((prevIndex) => {
+            console.log(`Skipping ${skipCount} question(s), moving from index ${prevIndex} to ${prevIndex + skipCount + 1}`);
+            return prevIndex + skipCount + 1;
+          });
         } else {
           onChangeIndex((prevIndex) => prevIndex + navigation);
         }
@@ -91,13 +104,11 @@ export default function Questions({
       onSaveAnswer(index, selectedAnswer);
 
       // Check for skips before final submission
-      const { skip, autoFillValue } = shouldSkipQuestion(index + 1, [
-        ...answers,
-        selectedAnswer,
-      ]);
+      const { skipCount, autoFillValues } = shouldSkipQuestion(index + 1, [...answers, selectedAnswer]);
 
-      if (skip) {
-        onSaveAnswer(index + 1, autoFillValue);
+      // Auto-fill if needed before submission
+      if (skipCount > 0) {
+        autoFillValues.forEach((value, i) => onSaveAnswer(index + 1 + i, value));
       }
 
       onSubmit();
