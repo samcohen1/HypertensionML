@@ -2,7 +2,8 @@ import { useState } from 'react'
 import './MainBody.css'
 import questions from '../questions.js'
 import Questions from './Questions'
-import Results from './Results.jsx'
+import Results from './Results'
+import Information from './Information.jsx'
 
 export default function MainBody () {
   const [index, setIndex] = useState(0)
@@ -49,9 +50,7 @@ export default function MainBody () {
           {index === 0
             ? (
               <>
-                <p className='home-text'>The International Hypertension Federation (IHF) estimates that many people are at risk of developing hypertension,
-                  often undiagnosed. Find out your risk with our quick, easy, and confidential assessment.
-                </p>
+                <Information />
                 <button className='start-button' onClick={() => setIndex(1)}>Start Assessment</button>
               </>
               )
@@ -69,11 +68,6 @@ export default function MainBody () {
               : <Results prediction={prediction} />}
         </div>
       </section>
-      {/* {prediction && (
-        <div className='prediction'>
-          <p>Prediction Probability: {prediction}</p>
-        </div>
-      )} */}
     </>
   )
 }
