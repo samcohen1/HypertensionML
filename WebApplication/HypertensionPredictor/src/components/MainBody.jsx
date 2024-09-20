@@ -8,10 +8,10 @@ import Results from './Results.jsx'
 // Helper function to determine if a question should be skipped
 function shouldSkipQuestion(currentIndex, answers) {
   // Example logic: Adjust indexes as necessary based on your question order
-  const smokingFrequencyAnswer = answers[8]; // Index 8 corresponds to the "Smoking" question
+  const smokingFrequencyAnswer = answers[9]; // Index 8 corresponds to the "Smoking" question
 
   // Check if the next question is the "Quit Smoking Age" question (index 11)
-  if (currentIndex === 11 && (smokingFrequencyAnswer === 'Every Day' || smokingFrequencyAnswer === 'Sometimes')) {
+  if (currentIndex === 12 && (smokingFrequencyAnswer === 'Every Day' || smokingFrequencyAnswer === 'Sometimes')) {
     const ageAnswer = answers[0]; // Index 0 corresponds to the "Age" question
     return { skip: true, autoFillValue: ageAnswer };
   }

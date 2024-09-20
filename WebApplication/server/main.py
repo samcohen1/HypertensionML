@@ -182,7 +182,7 @@ def preprocess_data(input_data):
     #Define column names
     column_names = [
         'Age', 'Height', 'Weight', 'Waist', 'Gender',
-        'GenHealth', 'OvrDietHealth', 'EducationLvl', 'Smoker',
+        'GenHealth', 'OvrDietHealth', 'EducationLvl', 'EverSmoked', 'Smoker',
         'AgeStartSmoking', 'CigsPerDay', 'AgeQuitSmoking', 'AlcConsumpFreq',
         'AlcConsumpAmtPerDrinkDay', 'Diabetes', 'Cholesterol', 'Stroke', 'ModActivity', 'VigActivity'
     ]
@@ -235,6 +235,7 @@ def submit_answers():
     try:
         # Receive data from frontend
         data = request.get_json(force=True)
+        print('Data Received')
         # Preprocess data into a DataFrame
         df = preprocess_data(data)  
         # Load the trained model

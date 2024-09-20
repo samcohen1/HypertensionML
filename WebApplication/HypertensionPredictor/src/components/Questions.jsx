@@ -6,13 +6,13 @@ import Navigation from './Navigation';
 // Helper function to determine if a question should be skipped
 function shouldSkipQuestion(currentIndex, answers) {
   // Adjust index numbers according to your question order
-  const smokingFrequencyAnswer = answers[8]; // Index 8 corresponds to the "Smoking" question
+  const smokingFrequencyAnswer = answers[9]; // Index 8 corresponds to the "Smoking" question
 
   console.log(`Checking skip logic for index: ${currentIndex}, Smoking Answer: ${smokingFrequencyAnswer}`);
 
   // Check if the current index corresponds to the "Quit Smoking Age" question (index 11)
   if (
-    currentIndex === 12 && // Ensure this index matches the "Quit Smoking Age" question
+    currentIndex === 13 && // Ensure this index matches the "Quit Smoking Age" question
     (smokingFrequencyAnswer === 'Every Day' || smokingFrequencyAnswer === 'Sometimes')
   ) {
     const ageAnswer = answers[0]; // Index 0 corresponds to the "Age" question
