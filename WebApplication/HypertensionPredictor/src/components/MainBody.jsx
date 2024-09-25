@@ -41,7 +41,7 @@ export default function MainBody () {
   }
 
   function handleSubmission () {
-    fetch('http://localhost:5000/api/submit_answers', {
+    fetch('https://backendhypertension.onrender.com/api/submit_answers', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -86,7 +86,7 @@ export default function MainBody () {
               : <>
                 <Results prediction={prediction} />
                 <RiskFactors shapValues={riskFactors} />
-                </>}
+              </>}
 
         </div>
       </section>
